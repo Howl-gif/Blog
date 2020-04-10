@@ -1,0 +1,209 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.min.css"/>
+		<style type="text/css">
+		/*爱心漂浮*/
+		#float {
+				position: absolute;
+				display: none;
+				/*right: 1020px;
+				top:400px;*/
+				z-index: 1;
+		}
+		#floatImg {
+				width: 250px;
+				height: 150px;
+				
+		 }
+		.body{
+ 			margin:0px;
+ 			padding:0px;
+			}
+		.form-control{
+			width: 50%;
+		}
+		/*发送框*/
+		.gd{
+			position: fixed;
+			top: 50%;
+			left: 0;
+			right: 0;
+			margin:0 auto;
+		}
+		.d1{
+			position:absolute; 
+			 left:0px;
+			 top:0px; 
+			 width:100%; 
+			 height:100%;
+			 z-index:-1;
+			}
+			/*弹幕框*/
+			.main{
+			    width: 1500px;
+			    height: 400px;
+			    margin:0 auto;
+			    position: relative;
+			}
+			.main img{
+			    position: absolute;
+			    right: 0;
+			    bottom:0;
+			    width: 100%;
+			    height: 100px;
+			}
+			#canvas{
+			    display: none;
+			   /*background: #000000;*/
+			}
+
+
+		</style>
+	</head>
+	<body>
+		
+		<form class="form-horizontal gd" id="gdd">
+  		<div class="form-group">
+   		 <label class="col-sm-2 control-label">Sent to</label>
+   		 <div class="col-sm-10">
+     	 <p class="form-control-static">最美逆行者</p>
+   		 </div>
+ 		 </div>
+  		<div class="form-group">
+   		 <label for="inputPassword" class="col-sm-2 control-label"></label>
+  		  <div class="col-sm-10" >
+    	  <textarea class="form-control" rows="3" id="context"></textarea>
+   		 </div>
+  		</div>
+  		<div class="form-group">
+    	<div class="col-sm-offset-2 col-sm-10">
+      <button type="button" class="btn btn-default" onclick="start();sent_to();" id="btnn">发送！</button>
+    </div>
+  </div>
+</form>
+
+	    <div class="d1"><img src="img/5e5bc38662abc.jpg" width="100%" height="100%"/></div>
+	
+		<div id="float"><img id="floatImg" alt="图片未找到" src="img/未标题-2.png"></div>
+		
+		<div class="main">
+			
+    	<canvas id="canvas"></canvas>
+    	<!--发送的小弹幕-->
+    	<marquee>
+    		<span style="font-weight: bolder;font-size: 60px;color: red;border: 5px solid white;display: none;" id="xdm">
+    		</span></marquee>
+ 
+</div>
+	
+	</body>
+	<script src="js/jquery.min.js"></script>
+	<script src="js/bootstrap.min.js"></script>
+	<script>
+		/*爱心全局参数*/
+		var moveX = 120; //X轴方向上移动的距离
+		var moveY = 390; //Y轴方向上移动的距离		
+		var stepX = 5; //图片X轴移动的速度		
+		var stepY = 6; //图片Y轴移动的速度		
+		var directionX = 0; //设置图片在X轴方向上的移动方向   0:向右  1:向左		
+		var directionY = 1; //设置图片在Y轴方向上的移动方向   0:向下  1:向上
+		function start(){
+			document.getElementById("float").style.display = "block";
+			document.getElementById("gdd").style.display = "none";
+			document.getElementById("canvas").style.display = "block";
+			setInterval("changePos()", 50);
+	
+		};
+		/*悬浮爱心*/
+		function changePos() {
+		var img = document.getElementById("float"); //获得图片所在层的ID
+		var height = document.documentElement.clientHeight; //浏览器的高度			
+		var width = document.documentElement.clientWidth; //浏览器的宽度			
+		var imgHeight = document.getElementById("floatImg").height; //飘浮图片的高度			
+		var imgWidth = document.getElementById("floatImg").width; //瓢浮图片的宽度			//设置飘浮图片距离浏览器左侧位置			
+		img.style.left = parseInt(moveX + document.documentElement.scrollLeft) + "px";			//设置飘浮图片距离浏览器右侧位置			
+		img.style.top = parseInt(moveY + document.documentElement.scrollTop) + "px"; 			//设置图片在Y轴上的移动规律			
+		if(directionY == 0) {				
+			//飘浮图片在Y轴方向上向下移动
+			moveY += stepY;		
+		}
+		else {				//飘浮图片在Y轴方向上向上移动
+				moveY -= stepY;			
+		}			
+		if(moveY < 0) {				
+			//如果飘浮图片飘浮到顶端的时候，设置图片在Y轴方向上向下移动				
+			directionY = 0;				
+			moveY = 0;			
+		}			
+		if(moveY > (height - imgHeight)) {		
+			//如果飘浮图片飘浮到浏览器底端的时候，设置图片在Y轴方向上向上移动				
+			directionY = 1;				
+			moveY = (height - imgHeight);		
+		} 			//设置图片在X轴上的移动规律			
+		if(directionX == 0) {			
+			moveX += stepX;			
+		} else {				
+			moveX -= stepX;		
+		}			
+		if(moveX < 0) {				//如果飘浮图片飘浮到浏览器左侧的时候，设置图片在X轴方向上向右移动	
+			directionX = 0;				
+			moveX = 0;		
+		}			
+		if(moveX > (width - imgWidth)) {				
+			//如果飘浮图片飘浮到浏览器右侧的时候，设置图片在X轴方向上向左移动				
+			directionX = 1;			
+			moveX = (width - imgWidth);			
+		}		
+		}		
+	/*弹幕*/
+	var canvas=document.getElementById('canvas');
+    var ctx=canvas.getContext("2d");
+    var width=10000;
+    var height=400;
+    var colorArr=["yellow","pink","orange","red","green"];
+    var textArr=[
+        "世界很大，幸福很小，希望如期而至的不止春天，还有疫情过后平平安安的你",
+        "春风送暖，欣欣向荣。万物更新，旧疾当愈。",
+        "爱和希望比病毒蔓延的更快，武汉莫慌，我们等你。",
+        "希望如期而至的不只春天，还有疫情过后平安的所有人。！",
+        "每个时代都有不同的英雄，此时此刻，战斗在一线救死扶伤迎难而上的医护工作者就是伟大的英雄!！",
+        "最美是浓烟，看不够的是人间，如期而至的春天，你好！",
+        "等春风来，等樱花开，武汉加油!！",
+        ".武汉今天也是有阳光作伴的一天，我们不孤单，要乐观!！！",
+        "没有被禁锢的城，只有离不开的爱，再艰难，爱不会离开!",
+        "岁月静好是因为有医护人员替我们负重前行!武汉，加油!！"
+    ]
+    canvas.width=width;
+    canvas.height=height;
+    var image=new Image();
+ 
+    ctx.font = "35px Courier New";
+    var numArrL=[1000,100,5,300,500,430];//初始的X
+    var numArrT=[80,100,20,300,380,210];//初始的Y
+    setInterval(function(){
+    ctx.clearRect(0,0,canvas.width,canvas.height);
+    ctx.save();
+    for(var j=0;j<textArr.length;j++){
+        numArrL[j]-=(j+1)*0.6;
+        ctx.fillStyle = colorArr[j]
+        ctx.fillText(textArr[j],numArrL[j],numArrT[j]);
+    }
+    for(var i=0;i<textArr.length;i++){
+        if(numArrL[i]<=-500){
+            numArrL[i]=canvas.width;
+        }
+    }
+    ctx.restore();
+    },60)
+    
+    /*发送弹幕上去*/
+   function sent_to(){
+   	var text= document.getElementById("context").value;
+   	document.getElementById("xdm").style.display = "block";
+   	document.getElementById("xdm").innerText = text;
+   }
+	</script>
+</html>
